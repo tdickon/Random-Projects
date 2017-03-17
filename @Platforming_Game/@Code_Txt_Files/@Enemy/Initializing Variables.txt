@@ -1,0 +1,10 @@
+///Initializing Variables
+//This code below is for our base enemy values
+dir = 1; //DIR stands for horizontal direction. -1 means the AI is moving to the left. 1 Means the AI moving to the right.
+movespeed = 3; //This is the enemy's moving speed.
+grav = 0.2; //This is the AI's base gravity.
+hsp = 0; //This is the AI's base horizontal speed.
+vsp = 0; //This is the AI's base vertical speed.
+ledgescan = 1; // This specifies whether or not the enemy will want to fall from a ledge.
+hp = 4; // Says the enemy health is 4.
+state = e_state.idle;

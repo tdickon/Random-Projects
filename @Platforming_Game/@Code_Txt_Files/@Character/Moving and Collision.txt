@@ -1,0 +1,44 @@
+///Player Movement Code
+if (global.pause) exit;//Enables the pause function so the player can see it. at the start of the game.
+//This is the code that establishes our character's movements and collision detection.
+//===============================================================================================================================================================
+//Get the player's input
+key_right = keyboard_check(ord("D")); //This checks to see if the "D" key is being pressed. If the "D" key is pressed, it's assigned 1. If not then it's 0.
+key_left = -keyboard_check(ord("A")); //This checks to see if the "A" key is being pressed. If the "A" key is pressed, it's assigned -1. If not then it's 0.
+key_up = keyboard_check(ord("W")); //This checks to see if the "W" key is being pressed. If the "W" key is pressed, it's assigned
+key_down = keyboard_check(ord("S")); //This checks to see if the "s" key is being pressed. If the "S" key is being pressed, it's assigned 
+key_jump = keyboard_check_pressed(vk_space); //This checks to see if the spacebar is being pressed, in order to jump you have to keep pressing space.
+//===============================================================================================================================================================
+//React to the player's input; calling back to our initializing variable list.
+move = key_right + key_left; //This checks to see what key is being pressed, using the -1,0,1 Values from above. -1 will move left, 0 will stop, 1 will move right.
+hsp = move * movespeed; //This takes the solution of Move (-1,0,1) and times it by 4, allowing you to move left or right by 4 Pixels.
+if (vsp < 5) vsp += grav; //This if equation establishes gravity and jump height, grav continues to add to itself until it reaches 5.
+
+if (place_meeting(x,y+1,obj_wall,)) //This checks to see if there is a floor below us. If there is then it will execute the code in the bracket below.
+{
+    vsp = key_jump * -jumpspeed; //Key_Jump checks for 1 or 0 (1 meaning pressed, 0 meaning not pressed)
+}
+//===============================================================================================================================================================
+//This is the code that establishes our character's collision detection system.
+//HORIZONTAL COLLISION CODE
+if (place_meeting(x+hsp,y,obj_wall)) //This checks to see that at our currenty X cordinates that we're moving towards and y cordinate if there is a wall.
+{ //The code inside here is for when we're about to collide. So we set up a while loop
+    while(!place_meeting(x+sign(hsp),y,obj_wall)) //This while loop will continue to exxecute until the condition is true.
+    {
+        x += sign(hsp); //This scans to see if there is a wall 1 pixel to the left or right of the character. If there isn't one it'll keep executing (moving).
+    }                   //Once it detects that there is a wall it'll snap out of this while loop, thus stoping the character from moving.
+    hsp = 0; //This stops the character from moving through the wall.
+}
+x += hsp;
+//VERTICAL COLLISION CODE
+if (place_meeting(x,y+vsp,obj_wall)) //This checks to see that at our current Y cordinate that we're moving towards and X cordinate if there is a wall.
+{ //The code inside here is for when we're about to collide. So we set up a while loop
+    while(!place_meeting(x,y+sign(vsp),obj_wall)) //This while loop will continue to exxecute until the condition is true.
+    {
+        y += sign(vsp); //This scans to see if there is a wall 1 pixel to the left or right of the character. If there isn't one it'll keep executing (jumping).
+    }                   //Once it detects that there is a wall it'll snap out of this while loop, thus stoping the character from jumping further.
+    vsp = 0; //This stops the character from jumping through the wall.
+}
+y += vsp;
+//Player Death Code
+if (hp <= 0) game_restart();

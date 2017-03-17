@@ -1,0 +1,77 @@
+///Enemy Movement and Collision
+if (global.pause) exit;//Enables the pause function so the player can see it. at the start of the game.
+hsp = dir * movespeed; //dir will tell the AI to move left or right by 3 spaces.
+vsp += grav;
+//==============================================================================================================================================================
+//This is the code that establishes our AI's collision detection system.
+//HORIZONTAL COLLISION CODE
+if (place_meeting(x+hsp,y,obj_wall)) //This checks to see that at our current X cordinates that we're moving towards and y cordinate if there is a wall.
+{ //The code inside here is for when we're about to collide. So we set up a while loop
+    while(!place_meeting(x+sign(hsp),y,obj_wall)) //This while loop will continue to exxecute until the condition is true.
+    {
+        x += sign(hsp); //This scans to see if there is a wall 1 pixel to the left or right of the character. If there isn't one it'll keep executing (moving).
+    }                   //Once it detects that there is a wall it'll snap out of this while loop, thus stoping the AI from moving.
+    hsp = 0; //This stops the AI from moving through the wall.
+    
+    dir *= -1; //This means when the AI hits a wall he will turn and move a different direction.
+}
+x += hsp;
+//VERTICAL COLLISION CODE
+if (place_meeting(x,y+vsp,obj_wall)) //This checks to see that at our current Y cordinate that AI's moving towards and X cordinate if there is a wall.
+{ //The code inside here is for when we're about to collide. So we set up a while loop
+    while(!place_meeting(x,y+sign(vsp),obj_wall)) //This while loop will continue to exxecute until the condition is true.
+    {
+        y += sign(vsp); //This scans to see if there is a wall 1 pixel to the left or right of the AI. If there isn't one it'll keep executing (jumping).
+    }                   //Once it detects that there is a wall it'll snap out of this while loop, thus stoping the AI from jumping further.
+    vsp = 0; //This stops the AI from jumping through the wall.
+   if (ledgescan) && !position_meeting(x+(sprite_width/2)*dir, y+(sprite_height/2)+1, obj_wall) //This specifies that the AI will not jump off a ledge if he detects a space of 8 or more pixels.
+    {
+        dir *= -1; //This will make the AI flip and turn to the opposite direction.
+    }
+}
+y += vsp;
+//ENEMY COLLISSION CODE
+if (place_meeting(x,y-1,obj_character)) //This checks to see if the AI is colliding with the player.
+{
+    //if (obj_character.y&lt; y-16) //This will check to see if when the player is colliding with the AI, are they coliding from the top?
+     if (obj_character.y< y-sprite_height/2)
+    {
+        with (obj_character) vsp = -jumpspeed; //This causes the player to bounce up when landing ontop of the AI enemy.
+        instance_destroy(); //This destroys the enemy AI
+    }
+
+    else //Do this if the player didn't jump into the enemy.
+    {
+        game_restart(); //This restarts the game because you failed.
+    }
+}
+//ENEMY DEATH CODE
+if (hp <= 0) instance_destroy();
+//Enemy CHASE CODE
+switch (state)
+{
+    case e_state.idle:
+    {
+        hsp = 0;   
+        vsp = (min(7,vsp+0.05));
+        if (distance_to_object(obj_character) < 40) state = e_state.chase;
+    }
+    break;
+    case e_state.chase:
+    {
+        dir = sign(obj_character.x - x);
+        hsp = dir * 2;
+        vsp = (min(7,vsp+0.05));
+        if (distance_to_object(obj_character) > 60) state = e_state.idle;
+    }
+    break;
+}
+    if random(60)<=1
+{
+    instance_create(x,y,obj_enemy_bullet);
+}
+//ENEMY DROP ITEMS CODE
+if (hp <= 0)
+{
+    instance_create(x,y,obj_items_2);
+}

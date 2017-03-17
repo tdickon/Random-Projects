@@ -1,0 +1,21 @@
+///Bullet Movement and Collision Code
+if (global.pause) exit;//Enables the pause function so the player can see it. at the start of the game.
+//Enemy Collision Code
+image_angle = direction;
+
+hit = instance_place(x,y,obj_enemy);// This checks if there is an enemy.
+
+if (hit != noone)// This means that our bullet found an enemy that it overlaps with.
+{
+    hit.hp -= 2;// Bullet does 2 damage to an enemy.
+    instance_destroy();// Destroys bullet after hitting an enemy.
+}
+//Wall Collision Code
+image_angle = direction;
+
+hit = instance_place(x,y,obj_wall);// This checks if there is a wall.
+
+if (hit != noone)//This executes if nothing is found.
+{
+    instance_destroy();// Destroys bullet after hitting a wall.
+}
